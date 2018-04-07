@@ -16,7 +16,8 @@
 
 package test.zur13.checkpoint.junit;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.concurrent.TimeUnit;
 
@@ -38,9 +39,8 @@ public class SimpleTests {
 	ACheckpoint cp3 = CheckpointBuilder.newInst().setName("CheckpointNoGlobalLimit").setMaxPassesPerResource(2)
 			.setReentrant(false).build();
 	@Rule
-    public Timeout globalTimeout = Timeout.seconds(10); // 10 seconds max per method tested
+	public Timeout globalTimeout = Timeout.seconds(10); // 10 seconds max per method tested
 
-	
 	@Before
 	public void setUp() throws Exception {
 	}
@@ -55,7 +55,7 @@ public class SimpleTests {
 		} catch (InterruptedException e) {
 			fail("Test interrupted");
 		}
-		
+
 		try (Pass p = cp.tryGetPass("red", 1, TimeUnit.SECONDS)) {
 			try (Pass p1 = cp.tryGetPass("blue", 1, TimeUnit.SECONDS)) {
 				assertTrue("Thread was not allowed to access 2 different resources", p != null && p1 != null);
@@ -95,7 +95,7 @@ public class SimpleTests {
 		} catch (InterruptedException e) {
 			fail("Test interrupted");
 		}
-		
+
 		try (Pass p = cp3.tryGetPassRW("red", 1, TimeUnit.SECONDS)) {
 			try (Pass p1 = cp3.tryGetPassRW("blue", 1, TimeUnit.SECONDS)) {
 				assertTrue("Thread was not allowed to access 2 different resources RW", p != null && p1 != null);
