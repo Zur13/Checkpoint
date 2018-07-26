@@ -16,38 +16,32 @@
 
 package test.zur13.checkpoint.test;
 
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 import java.awt.BorderLayout;
-import javax.swing.BoxLayout;
-import javax.swing.JTable;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
 import java.awt.Component;
-import javax.swing.Box;
 import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.concurrent.atomic.AtomicLong;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
 
 import zur13.checkpoint.ACheckpoint;
 import zur13.checkpoint.CheckpointBuilder;
 import zur13.checkpoint.Pass;
-
-import javax.swing.border.EtchedBorder;
-import javax.swing.JScrollPane;
-import javax.swing.UIManager;
-import javax.swing.border.SoftBevelBorder;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.MatteBorder;
-import java.awt.Color;
-import java.awt.Rectangle;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import java.awt.event.ActionListener;
-import java.util.concurrent.atomic.AtomicLong;
-import java.awt.event.ActionEvent;
 
 public class Tester {
 	private static final int RES_APPLIC_COL = 0;
@@ -65,9 +59,9 @@ public class Tester {
 	private int applicants = 10;
 	private int roPasses = 10;
 
-	private TesterThread threads[];
+	private TesterThread[] threads;
 
-	private AtomicLong results[][];
+	private AtomicLong[][] results;
 
 	private ACheckpoint checkpoint;
 
@@ -93,7 +87,7 @@ public class Tester {
 		results = new AtomicLong[applicants][5];
 		checkpoint = CheckpointBuilder.newInst().setMaxPassesPerResource(roPasses).setReentrant(true).build();
 		int i = 0;
-		for (AtomicLong resRow[] : results) {
+		for (AtomicLong[] resRow : results) {
 			for (int j = 0; j < resRow.length; j++) {
 				resRow[j] = new AtomicLong(0);
 			}
@@ -121,26 +115,29 @@ public class Tester {
 	}
 
 	public void test(Long resourceId, boolean ro, Long reenterCounter) {
-		AtomicLong row[] = results[resourceId.intValue()];
+		AtomicLong[] row = results[resourceId.intValue()];
 		row[RES_THRDWT_COL].incrementAndGet();
 
 		if ( ro ) {
 			try (Pass p = checkpoint.getPass(resourceId)) {
 				row[RES_THRDWT_COL].decrementAndGet();
-				if ( reenterCounter == getInitialReenter() )
+				if ( reenterCounter == getInitialReenter() ) {
 					row[RES_THRDIN_COL].incrementAndGet();
+				}
 
 				testPayload(resourceId, ro);
-				if ( reenterCounter > 0 )
+				if ( reenterCounter > 0 ) {
 					test(resourceId, ro, reenterCounter - 1);
+				}
 
 				if ( row[RES_THRDIN_COL].get() > roPasses ) {
 					int i = 0;
 					i++;
 				}
 
-				if ( reenterCounter == getInitialReenter() )
+				if ( reenterCounter == getInitialReenter() ) {
 					row[RES_THRDIN_COL].decrementAndGet();
+				}
 
 			} catch (Exception e) {
 				row[RES_THRDWT_COL].decrementAndGet();
@@ -149,20 +146,23 @@ public class Tester {
 		} else {
 			try (Pass p = checkpoint.getPassRW(resourceId)) {
 				row[RES_THRDWT_COL].decrementAndGet();
-				if ( reenterCounter == getInitialReenter() )
+				if ( reenterCounter == getInitialReenter() ) {
 					row[RES_THRDIN_COL].incrementAndGet();
+				}
 
 				testPayload(resourceId, ro);
-				if ( reenterCounter > 0 )
+				if ( reenterCounter > 0 ) {
 					test(resourceId, ro, reenterCounter - 1);
+				}
 				
 				if ( row[RES_THRDIN_COL].get() > 1 ) {
 					int i = 0;
 					i++;
 				}
 
-				if ( reenterCounter == getInitialReenter() )
+				if ( reenterCounter == getInitialReenter() ) {
 					row[RES_THRDIN_COL].decrementAndGet();
+				}
 			} catch (Exception e) {
 				row[RES_THRDWT_COL].decrementAndGet();
 				e.printStackTrace(System.err);
@@ -173,7 +173,7 @@ public class Tester {
 
 	public void testPayload(Long resourceId, boolean ro) throws Exception {
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
-		AtomicLong row[] = results[resourceId.intValue()];
+		AtomicLong[] row = results[resourceId.intValue()];
 
 		long cur = row[RES_THRDIN_COL].get();
 		long max = row[RES_MAXTHR_COL].get();

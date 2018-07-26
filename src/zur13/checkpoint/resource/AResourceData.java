@@ -25,18 +25,20 @@ import zur13.checkpoint.Pass;
 /**
  * Stores active passes data for a single resource.
  *
- * @author <ul>
+ * @author
+ *         <ul>
  *         <li>Yurii Polianytsia (coolio-iglesias@yandex.ru)</li>
  *         </ul>
  *
  */
 public abstract class AResourceData {
 
-	protected Object resourceId;
-	protected AtomicLong refCounter = new AtomicLong(1);
+	protected final Object resourceId;
+	protected final AtomicLong refCounter = new AtomicLong(1);
 
-	public AResourceData() {
+	public AResourceData(Object resourceId) {
 		super();
+		this.resourceId = resourceId;
 	}
 
 	public Object getResourceId() {
@@ -156,9 +158,9 @@ public abstract class AResourceData {
 	 * @throws InterruptedException
 	 */
 	public abstract Pass tryGetPassRW(ACheckpoint checkpoint, long timeout, TimeUnit unit) throws InterruptedException;
-	
+
 	/**
-	 * Return Pass instance allowing new Pass for the resourceId. 
+	 * Return Pass instance allowing new Pass for the resourceId.
 	 * 
 	 * @param pass
 	 */
@@ -172,30 +174,24 @@ public abstract class AResourceData {
 		return result;
 	}
 
-	/**
-	 * Allows comparison with other resourceId.
-	 */
 	@Override
 	public boolean equals(Object obj) {
-		if ( this == obj )
+		if ( this == obj ) {
 			return true;
-		if ( obj == null )
+		}
+		if ( obj == null ) {
 			return false;
-	
-		if ( obj instanceof AResourceData ) {
-			AResourceData other = (AResourceData) obj;
-			if ( this.resourceId == null ) {
-				if ( other.resourceId != null )
-					return false;
-			} else if ( !this.resourceId.equals(other.resourceId) )
+		}
+		if ( !(obj instanceof AResourceData) ) {
+			return false;
+		}
+		AResourceData other = (AResourceData) obj;
+		if ( this.resourceId == null ) {
+			if ( other.resourceId != null ) {
 				return false;
-		} else {
-			// suggest that obj is resourceId
-			if ( this.resourceId == null ) {
-				if ( obj != null )
-					return false;
-			} else if ( !this.resourceId.equals(obj) )
-				return false;
+			}
+		} else if ( !this.resourceId.equals(other.resourceId) ) {
+			return false;
 		}
 		return true;
 	}

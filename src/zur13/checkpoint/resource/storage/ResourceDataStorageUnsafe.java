@@ -42,7 +42,7 @@ import zur13.checkpoint.resource.ResourceDataFactory;
  *
  */
 public class ResourceDataStorageUnsafe extends AResourceDataStorage {
-	ConcurrentHashMap<Object, AResourceData> dataBuckets[];
+	ConcurrentHashMap<Object, AResourceData>[] dataBuckets;
 	ResourceDataFactory adf;
 
 	@SuppressWarnings("unchecked")
@@ -96,7 +96,7 @@ public class ResourceDataStorageUnsafe extends AResourceDataStorage {
 	}
 
 	/**
-	 * Spread hash to minimize collisions inside ConcurrentHashMaps
+	 * Spread hash to minimize collisions inside ConcurrentHashMaps.
 	 * 
 	 * @param h
 	 * @return

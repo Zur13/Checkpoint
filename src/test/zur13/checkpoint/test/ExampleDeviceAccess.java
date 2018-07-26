@@ -11,10 +11,10 @@ public class ExampleDeviceAccess {
 	 * Maximum number or RO requests that can be executed simultaneously to each device. Other threads should wait
 	 * their turn to request device data.
 	 */
-	private final static int MAX_SIMULTANEOUS_RO_REQUESTS_PER_DEVICE = 30;
+	private static final int MAX_SIMULTANEOUS_RO_REQUESTS_PER_DEVICE = 30;
 
 	/* Maximum number or requests that can be executed simultaneously by server. */
-	private final static int MAX_SIMULTANEOUS_FOR_ALL_DEVICES = 600;
+	private static final int MAX_SIMULTANEOUS_FOR_ALL_DEVICES = 600;
 
 	ACheckpoint cp = CheckpointBuilder.newInst()
 			.setName("Device access")

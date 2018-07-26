@@ -27,8 +27,7 @@ import zur13.checkpoint.resource.storage.AResourceDataStorage;
  * Supports all features of Simple checkpoint and also supports reentrancy.
  * Reentrancy allows same thread to enter multiple restricted sections with the same resourceId without using
  * additional passes and without using global limit.
- * 
- * 
+ * <p/>
  * WARN: Reentrant checkpoint does not allow reentrant upgrades from RO pass to RW pass for the same thread for the same
  * resource id.
  * WARN: Reentrant checkpoint does not allow to close the pass from the different thread. Pass should be closed by the
@@ -47,6 +46,7 @@ public class ReentrantCheckpoint extends SimpleCheckpoint {
 			new ConcurrentHashMap<ReentrantCheckpoint.TidResourceKey, ReentrantPass>();
 
 	/**
+	 * Instantiate a reentrant checkpoint object.
 	 * 
 	 * @param ads
 	 * @param globalPassesLimit
@@ -454,20 +454,26 @@ public class ReentrantCheckpoint extends SimpleCheckpoint {
 
 		@Override
 		public boolean equals(Object obj) {
-			if ( this == obj )
+			if ( this == obj ) {
 				return true;
-			if ( obj == null )
+			}
+			if ( obj == null ) {
 				return false;
-			if ( !(obj instanceof TidResourceKey) )
+			}
+			if ( !(obj instanceof TidResourceKey) ) {
 				return false;
+			}
 			TidResourceKey other = (TidResourceKey) obj;
 			if ( this.resourceId == null ) {
-				if ( other.resourceId != null )
+				if ( other.resourceId != null ) {
 					return false;
-			} else if ( !this.resourceId.equals(other.resourceId) )
+				}
+			} else if ( !this.resourceId.equals(other.resourceId) ) {
 				return false;
-			if ( this.tid != other.tid )
+			}
+			if ( this.tid != other.tid ) {
 				return false;
+			}
 			return true;
 		}
 

@@ -34,9 +34,9 @@ import zur13.checkpoint.CheckpointBuilder;
 import zur13.checkpoint.Pass;
 
 public class MultithreadTest {
-	protected final static int MAX_THREADS_PER_RESOURCE = 6;
-	protected final static int MAX_RESOURCES = 3;
-	protected final static int MAX_THREADS = MAX_THREADS_PER_RESOURCE * MAX_RESOURCES + MAX_THREADS_PER_RESOURCE * 2;
+	protected static final int MAX_THREADS_PER_RESOURCE = 6;
+	protected static final int MAX_RESOURCES = 3;
+	protected static final int MAX_THREADS = MAX_THREADS_PER_RESOURCE * MAX_RESOURCES + MAX_THREADS_PER_RESOURCE * 2;
 
 	ExecutorService pool = Executors.newFixedThreadPool(MAX_THREADS);
 

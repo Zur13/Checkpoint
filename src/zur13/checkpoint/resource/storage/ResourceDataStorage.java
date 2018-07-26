@@ -33,8 +33,8 @@ import zur13.checkpoint.resource.ResourceDataFactory;
  *
  */
 public class ResourceDataStorage extends AResourceDataStorage {
-	ConcurrentHashMap<Object, AResourceData> dataBuckets[];
-	ResourceDataFactory adf;
+	final ConcurrentHashMap<Object, AResourceData>[] dataBuckets;
+	final ResourceDataFactory adf;
 
 	@SuppressWarnings("unchecked")
 	public ResourceDataStorage(ResourceDataFactory adf, int concurrencyLevel) {
@@ -49,7 +49,7 @@ public class ResourceDataStorage extends AResourceDataStorage {
 	/**
 	 * Retrieve ResourceData instance for the given resource.
 	 * Create new instance of the ResourceData if no instance stored for the given resource.
-	 * 
+	 * <p/>
 	 * Release ResourceData after the passes it supplied is returned or you have done working with it.
 	 * 
 	 * @return
@@ -94,7 +94,7 @@ public class ResourceDataStorage extends AResourceDataStorage {
 
 		AResourceData ad = resourcesDataBucket.get(resourceId);
 
-		if ( ad.getRefCounter().decrementAndGet() <= 0 ) {
+		if ( ad != null && ad.getRefCounter().decrementAndGet() <= 0 ) {
 			synchronized (resourcesDataBucket) {
 				if ( ad.getRefCounter().get() <= 0 ) {
 					resourcesDataBucket.remove(ad.getResourceId());
@@ -104,7 +104,7 @@ public class ResourceDataStorage extends AResourceDataStorage {
 	}
 
 	/**
-	 * Spread hash to minimize collisions inside ConcurrentHashMaps
+	 * Spread hash to minimize collisions inside ConcurrentHashMaps.
 	 * 
 	 * @param h
 	 * @return

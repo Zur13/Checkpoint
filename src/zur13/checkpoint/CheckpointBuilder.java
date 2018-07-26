@@ -50,7 +50,7 @@ public class CheckpointBuilder {
 
 	/**
 	 * Sets global number of simultaneously active passes for checkpoint instance.
-	 * 
+	 * <p/>
 	 * Default is Unlimited.
 	 * 
 	 * @param globalPassesLimit
@@ -118,11 +118,12 @@ public class CheckpointBuilder {
 
 	/**
 	 * Configures checkpoint to ignore reentrant requests.
+	 * <p/>
 	 * Default is false.
-	 * 
+	 * <p/>
 	 * Reentrant request means that same thread may enter restricted section using same resource id unlimited number of
 	 * times (ignores resource max passes limit and global passes limit).
-	 * 
+	 * <p/>
 	 * WARN: Reentrant checkpoint does not allow reentrant upgrades from RO pass to RW pass for the same thread for the
 	 * same resource id.
 	 * WARN: Reentrant checkpoint does not allow to close the pass from the different thread. Pass should be closed by

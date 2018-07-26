@@ -16,7 +16,9 @@
 
 package test.zur13.checkpoint.junit;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.concurrent.TimeUnit;
 
@@ -36,8 +38,8 @@ public class ReentrancyTest {
 			.setMaxPassesPerResource(1).setReentrant(true).build();
 
 	@Rule
-    public Timeout globalTimeout = Timeout.seconds(10); // 10 seconds max per method tested
-	
+	public Timeout globalTimeout = Timeout.seconds(10); // 10 seconds max per method tested
+
 	@Before
 	public void setUp() throws Exception {
 	}
@@ -124,7 +126,7 @@ public class ReentrancyTest {
 		} catch (InterruptedException e) {
 			fail("Test interrupted");
 		}
-		
+
 		try (Pass p = cp.tryGetPass("black", 1, TimeUnit.SECONDS)) {
 			try (Pass p1 = cp.tryGetPassRW("black", 1, TimeUnit.SECONDS)) {
 				if ( p != null && p1 != null ) {
@@ -141,7 +143,7 @@ public class ReentrancyTest {
 			try (Pass p1 = cp2.tryGetPassRW("cyan", 1, TimeUnit.SECONDS)) {
 				try (Pass p2 = cp2.tryGetPassRW("cyan", 1, TimeUnit.SECONDS)) {
 					if ( p != null && p1 != null && p2 != null ) {
-						reentrancyGlobalLimitBypassed = true;	
+						reentrancyGlobalLimitBypassed = true;
 					}
 				}
 			}
@@ -159,7 +161,7 @@ public class ReentrancyTest {
 		assertTrue(successMultiResource);
 		assertTrue(successDowngrade);
 		assertFalse(successUpgrade);
-		
+
 		assertTrue(reentrancyGlobalLimitBypassed);
 		assertFalse(globalLimitIgnored);
 	}

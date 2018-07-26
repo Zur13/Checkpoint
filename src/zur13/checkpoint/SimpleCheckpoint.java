@@ -38,6 +38,7 @@ public class SimpleCheckpoint extends ACheckpoint {
 	public static final int UNLIMITED = -1;
 
 	/**
+	 * Instantiate a simple checkpoint object.
 	 * 
 	 * @param ads
 	 * @param globalPassesLimit
@@ -105,7 +106,7 @@ public class SimpleCheckpoint extends ACheckpoint {
 	@Override
 	public Pass getPassUninterruptibly(Object resourceId) {
 		AResourceData ad = ads.get(resourceId);
-		Pass pass = ad.getPassUninterruptibly(this);// TODO:
+		Pass pass = ad.getPassUninterruptibly(this);
 
 		if ( globalPassesSemaphore != null ) {
 			globalPassesSemaphore.acquireUninterruptibly();
@@ -130,7 +131,7 @@ public class SimpleCheckpoint extends ACheckpoint {
 		AResourceData ad = ads.get(resourceId);
 		Pass pass = null;
 		try {
-			pass = ad.tryGetPass(this); // TODO:
+			pass = ad.tryGetPass(this);
 		} finally {
 			if ( pass == null ) {
 				ads.release(resourceId);

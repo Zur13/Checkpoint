@@ -121,7 +121,7 @@ public abstract class ACheckpoint implements ICheckpoint {
 	/**
 	 * Returns specified pass to this checkpoint.
 	 * 
-	 * @see Pass.close()
+	 * @see Pass.close
 	 * @param pass
 	 */
 	protected abstract void returnPass(Pass pass);

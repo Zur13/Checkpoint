@@ -21,7 +21,7 @@ public class ResourceDataFactory {
 	boolean fair;
 
 	/**
-	 * 
+	 * Instantiate a resource data factory object.
 	 * 
 	 * @param maxActivePassesPerResource
 	 *            max number of passes per resource

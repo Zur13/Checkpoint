@@ -26,8 +26,9 @@ Quick example: lets say we have class that implements read and write data from/t
     		
     		try (Pass p = cp.getPassUninterruptibly(device)) {
     			// read device data here 
-    			// there are no writing threads for current device and no more then
-    			// MAX_SIMULTANEOUS_RO_REQUESTS_PER_DEVICE threads are reading current device
+    			// there are no writing threads for current device when thread received access 
+    			// here and no more then MAX_SIMULTANEOUS_RO_REQUESTS_PER_DEVICE threads are 
+    			// reading current device
     			
     			deviceData = "";
     		}

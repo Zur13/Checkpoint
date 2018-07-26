@@ -32,32 +32,31 @@ import zur13.checkpoint.Pass;
  *
  */
 public class ResourceData extends AResourceData {
-	protected int maxActivePasses = 1; // max number of resource passes might be given simultaneously (max number of
-										// threads with current resourceId allowed to access restricted section
-										// simultaneously)
+	/* max number of threads with current resourceId allowed to access restricted section simultaneously */
+	protected int maxActivePasses = 1; // max number of resource passes might be given simultaneously
 	protected Semaphore semaphore;
 
-	private ResourceData(Object resourceId) {
-		super();
-		this.resourceId = resourceId;
+	private ResourceData(final Object resourceId) {
+		super(resourceId);
 	}
 
 	/**
+	 * Instantiate a resource data object.
 	 * 
 	 * @param resourceId
-	 * @param maxActivePassesPerResource
+	 * @param maxActivePasses
 	 *            max number of threads with current resourceId allowed to access restricted section simultaneously
 	 * @param fair
 	 * @see java.util.concurrent.Semaphore
 	 */
-	public ResourceData(Object resourceId, int maxActivePasses, boolean fair) {
+	public ResourceData(final Object resourceId, final int maxActivePasses, final boolean fair) {
 		this(resourceId);
 		this.maxActivePasses = maxActivePasses;
 		semaphore = new Semaphore(maxActivePasses, fair);
 	}
 
 	@Override
-	public Pass getPass(ACheckpoint checkpoint) throws InterruptedException {
+	public final Pass getPass(final ACheckpoint checkpoint) throws InterruptedException {
 		semaphore.acquire();
 		try {
 			return new Pass(resourceId, checkpoint, true);
@@ -68,7 +67,7 @@ public class ResourceData extends AResourceData {
 	}
 
 	@Override
-	public Pass getPassUninterruptibly(ACheckpoint checkpoint) {
+	public final Pass getPassUninterruptibly(final ACheckpoint checkpoint) {
 		semaphore.acquireUninterruptibly();
 		try {
 			return new Pass(resourceId, checkpoint, true);
@@ -79,18 +78,21 @@ public class ResourceData extends AResourceData {
 	}
 
 	@Override
-	public Pass tryGetPass(ACheckpoint checkpoint) {
-		semaphore.tryAcquire();
-		try {
-			return new Pass(resourceId, checkpoint, true);
-		} catch (Exception e) {
-			semaphore.release();
-			throw e;
+	public final Pass tryGetPass(final ACheckpoint checkpoint) {
+		if ( semaphore.tryAcquire() ) {
+			try {
+				return new Pass(resourceId, checkpoint, true);
+			} catch (Exception e) {
+				semaphore.release();
+				throw e;
+			}
 		}
+		return null;
 	}
 
 	@Override
-	public Pass tryGetPass(ACheckpoint checkpoint, long timeout, TimeUnit unit) throws InterruptedException {
+	public final Pass tryGetPass(final ACheckpoint checkpoint, final long timeout, final TimeUnit unit)
+			throws InterruptedException {
 		if ( semaphore.tryAcquire(timeout, unit) ) {
 			try {
 				return new Pass(resourceId, checkpoint, true);
@@ -103,7 +105,7 @@ public class ResourceData extends AResourceData {
 	}
 
 	@Override
-	public Pass getPassRW(ACheckpoint checkpoint) throws InterruptedException {
+	public final Pass getPassRW(final ACheckpoint checkpoint) throws InterruptedException {
 		semaphore.acquire(maxActivePasses);
 		try {
 			return new Pass(resourceId, checkpoint, false);
@@ -114,7 +116,7 @@ public class ResourceData extends AResourceData {
 	}
 
 	@Override
-	public Pass getPassRWUninterruptibly(ACheckpoint checkpoint) {
+	public final Pass getPassRWUninterruptibly(final ACheckpoint checkpoint) {
 		semaphore.acquireUninterruptibly(maxActivePasses);
 		try {
 			return new Pass(resourceId, checkpoint, false);
@@ -125,7 +127,7 @@ public class ResourceData extends AResourceData {
 	}
 
 	@Override
-	public Pass tryGetPassRW(ACheckpoint checkpoint) {
+	public final Pass tryGetPassRW(final ACheckpoint checkpoint) {
 		semaphore.tryAcquire(maxActivePasses);
 		try {
 			return new Pass(resourceId, checkpoint, false);
@@ -136,7 +138,8 @@ public class ResourceData extends AResourceData {
 	}
 
 	@Override
-	public Pass tryGetPassRW(ACheckpoint checkpoint, long timeout, TimeUnit unit) throws InterruptedException {
+	public final Pass tryGetPassRW(final ACheckpoint checkpoint, final long timeout, final TimeUnit unit)
+			throws InterruptedException {
 		if ( semaphore.tryAcquire(maxActivePasses, timeout, unit) ) {
 			try {
 				return new Pass(resourceId, checkpoint, false);
@@ -149,7 +152,7 @@ public class ResourceData extends AResourceData {
 	}
 
 	@Override
-	public void returnPass(Pass pass) {
+	public final void returnPass(final Pass pass) {
 		if ( pass.isReadOnly() ) {
 			semaphore.release();
 		} else {
