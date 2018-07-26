@@ -28,7 +28,7 @@ Quick example: lets say we have class that implements read and write data from/t
     			// read device data here 
     			// there are no writing threads for current device when thread received access 
                 // here and no more then MAX_SIMULTANEOUS_RO_REQUESTS_PER_DEVICE threads are 
-                // reading current device
+                // reading current device 
                 
     			deviceData = "";
     		}
