@@ -1,5 +1,5 @@
 # Checkpoint
-Checkpoint library is the way to organize restricted sections. Restricted sections are somewhat similar to the critical sections (synchronize blocks) but allows multiple threads to access same section.
+Checkpoint library provides the way to organize restricted sections. Restricted sections are somewhat similar to the critical sections (synchronize blocks) but allows multiple threads to access same section under some conditions.
 
 Quick example: lets say we have class that implements read and write data from/to device and we want to limit maximum number of device read requests processed simultaneously and maximum number of connections used by our server:  
 
@@ -25,9 +25,11 @@ Quick example: lets say we have class that implements read and write data from/t
     		String deviceData;
     		
     		try (Pass p = cp.getPassUninterruptibly(device)) {
-				// read device data here 
-				// there are no writing threads for current device when thread received access  here and no more then MAX_SIMULTANEOUS_RO_REQUESTS_PER_DEVICE threads are reading current device 
-    			
+    			// read device data here 
+    			// there are no writing threads for current device when thread received access 
+    			// here and no more then MAX_SIMULTANEOUS_RO_REQUESTS_PER_DEVICE threads are 
+    			// reading current device
+                
     			deviceData = "";
     		}
     		
