@@ -128,13 +128,15 @@ public class ResourceData extends AResourceData {
 
 	@Override
 	public final Pass tryGetPassRW(final ACheckpoint checkpoint) {
-		semaphore.tryAcquire(maxActivePasses);
-		try {
-			return new Pass(resourceId, checkpoint, false);
-		} catch (Exception e) {
-			semaphore.release();
-			throw e;
+		if ( semaphore.tryAcquire(maxActivePasses) ) {
+			try {
+				return new Pass(resourceId, checkpoint, false);
+			} catch (Exception e) {
+				semaphore.release();
+				throw e;
+			}
 		}
+		return null;
 	}
 
 	@Override
